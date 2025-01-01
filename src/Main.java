@@ -43,14 +43,12 @@ public class Game extends JFrame {
         menu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
                 GameSettings();
             }
         });
     }
 
     private JLabel ThongSo(String string, int i, int j, int k, int l) {
-        // TODO Auto-generated method stub
         JLabel setup = new JLabel(string);
         setup.setHorizontalAlignment(SwingConstants.CENTER);
         setup.setBounds(i, j, k, l);
@@ -65,7 +63,6 @@ public class Game extends JFrame {
     }
 
     private void GameSettings() {
-        // TODO Auto-generated method stub
         JDialog setting = new JDialog(this, "Cài đặt", true);
         setting.setSize(400, 300);
         setting.setLayout(null);
