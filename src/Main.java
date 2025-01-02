@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class Game extends JFrame {
+public class Main extends JFrame {
     JLabel background;
     // set điểm, số lần thử, số lượt chơi, thời gian, chế độ chơi
     JLabel point, atem, pair, time, level;
@@ -16,7 +16,7 @@ public class Game extends JFrame {
     JButton menu;
     Image originalImage;
 
-    public Game() {
+    public Main() {
 
         new JFrame("Flip And Find");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -93,7 +93,7 @@ public class Game extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Game::new);
+        SwingUtilities.invokeLater(Main::new);
     }
 
     private void GameSettings() {
