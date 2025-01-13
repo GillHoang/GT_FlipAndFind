@@ -1,4 +1,3 @@
-package FAF_v3;
 
 import java.awt.CardLayout;
 import javax.swing.*;
