@@ -1,5 +1,3 @@
-package FlipAndFind;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -8,13 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class Game extends JPanel {
+public class GamePanel extends JPanel {
     JLabel background;
     JLabel point, atem, pair, time, level;
     JButton menu;
     Image originalImage;
 
-    public Game() {
+    public GamePanel() {
         setVisible(true);
         setLayout(null);
         try {
@@ -83,18 +81,6 @@ public class Game extends JPanel {
             background.setBounds(0, 0, 1195, 750);
         }
     }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Flip And Find");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1200, 700);
-        frame.setResizable(false);
-        Game game = new Game();
-        frame.add(game);
-        frame.setVisible(true);
-        SwingUtilities.invokeLater(Game::new);
-    }
-
     private void GameSettings() {
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
         JDialog setting = new JDialog(frame, "Cài đặt", true);
