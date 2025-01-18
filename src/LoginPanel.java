@@ -5,6 +5,10 @@ import java.awt.geom.*;
 import java.util.*;
 
 public class LoginPanel extends JPanel {
+    private static final int LEAF_COUNT = 1; // Số lượng lá
+    private final Leaf[] leaves = new Leaf[LEAF_COUNT];
+    private Leaf leaf;
+
     public LoginPanel() {
         this.setLayout(null);
 
@@ -105,6 +109,36 @@ public class LoginPanel extends JPanel {
                 errorLabel.setText("biết mật khẩu không mà nhập.");
             }
         });
+
+        //khởi tạo lá
+        Random random = new Random();
+        for (int i = 0; i < LEAF_COUNT; i++) {
+            leaves[i] = new Leaf((int) (Math.random() * 800), (int) (Math.random() * 600), 1 + (int) (Math.random() * 3));
+        }
+
+        // Cập nhật vị trí của lá trong một luồng riêng
+        Thread leafUpdater = new Thread(() -> {
+            while (true) {
+                for (Leaf leaf : leaves) {
+                    leaf.y += leaf.speed * 0.1;// slowmotion
+                    leaf.x += Math.sin(leaf.y / 100.0) * 1; //lắc nhẹ theo trục x
+                    if (leaf.y > getHeight()) {
+                        leaf.y = -20; // reset vị trí nếu rơi xuống
+                        leaf.x = (int) (Math.random() * getWidth());
+                    }
+                }
+                // Cập nhật giao diện
+                SwingUtilities.invokeLater(this::repaint);
+
+                try {
+                    Thread.sleep(1500); // Cập nhật mỗi 50ms
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        leafUpdater.setDaemon(true); // Để chương trình dừng khi thoát
+        leafUpdater.start();
     }
 
     @Override
@@ -157,3 +191,16 @@ public class LoginPanel extends JPanel {
         g2d.fillPolygon(hexagon);
     }
 }
+
+
+// Lớp đại diện cho một chiếc lá
+class Leaf {
+    int x, y, speed;
+
+    public Leaf(int x, int y, int speed) {
+        this.x = x;
+        this.y = y;
+        this.speed = speed;
+    }
+}
+
