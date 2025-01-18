@@ -1,3 +1,5 @@
+package src;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -36,7 +38,7 @@ public class GamePanel extends JPanel {
 		setLayout(null);
 		try {
 
-			ImageIcon backgroundIcon = new ImageIcon("src/FlipAndFind/castle-4354 (2).gif"); // Thay đường dẫn
+			ImageIcon backgroundIcon = new ImageIcon("src/castle-4354 (2).gif"); // Thay đường dẫn
 			originalImage = backgroundIcon.getImage();
 			background = new JLabel(backgroundIcon);
 		} catch (Exception e) {
@@ -54,11 +56,11 @@ public class GamePanel extends JPanel {
 		numPairsLeft = (x * y) / 2;
 		result = generateRandom2DArray();
 
-		point = ThongSo("Điểm", 0, 0, 174, 171);
-		level = ThongSo("Easy", 174, 0, 214, 98);
-		atem = ThongSo("Lần thử: ", 388, 0, 214, 71);
-		pair = ThongSo("Số lượt: ", 602, 0, 214, 71);
-		time = ThongSo("Time", 1030, 0, 170, 171);
+		point = ThongSo("Điểm: " + numPoint, 0, 0, 174, 171);
+		level = ThongSo(gameMode , 174, 0, 214, 98);
+		atem = ThongSo("Số  lần thử: " + attemptsLeft, 388, 0, 214, 71);
+		pair = ThongSo("Còn lại: " + numPairsLeft, 602, 0, 214, 71);
+		time = ThongSo("Time: 60", 1030, 0, 170, 171);
 
 		menu = new JButton("Cài đặt");
 		menu.setBounds(816, 0, 214, 98);
@@ -79,12 +81,12 @@ public class GamePanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (selected != null) {
-					selected.setIcon(new ImageIcon(getClass().getResource("/Images/question.png")));
+					selected.setIcon(new ImageIcon(getClass().getResource("/question.png")));
 					selected = null;
 				}
 				for (JButton btn : cards) {
 					if (btn.getIcon() != null && !btn.getIcon().toString().contains("question")) {
-						btn.setIcon(new ImageIcon(getClass().getResource("/Images/question.png")));
+						btn.setIcon(new ImageIcon(getClass().getResource("/question.png")));
 					}
 				}
 				timer1.stop();
@@ -96,13 +98,13 @@ public class GamePanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				timeLeft--;
 				if (timeLeft >= 0) {
-					time.setText("Time Left: " + timeLeft);
+					time.setText("Còn lại: " + timeLeft);
 				} else {
 					for (JButton card : cards) {
 						card.setEnabled(false);
 					}
 					timer3.stop();
-					time.setText("End of time!");
+					time.setText("Hết giờ!");
 				}
 			}
 		});
@@ -175,10 +177,11 @@ public class GamePanel extends JPanel {
 			String k = String.valueOf(result[x][y]);
 			JButton card = new JButton(k);
 
-			// Refactor:
-			card.setBounds(51 + y * (99) + 200 * y, 249 + x * 44 + 100 * x, 200, 100);
+			int hImage = 100;
+			int wImage = 200;
+			card.setBounds(51 + y * (99) + wImage * y, 249 + x * 44 + hImage * x, wImage, hImage);
 			card.addActionListener(btnAction());
-			card.setIcon(new ImageIcon(getClass().getResource("/Images/question.png")));
+			card.setIcon(new ImageIcon(getClass().getResource("/question.png")));
 			cards.add(card);
 		}
 		return cards;
@@ -253,36 +256,36 @@ public class GamePanel extends JPanel {
 						card.setEnabled(false);
 					}
 					timer3.stop();
-					atem.setText("May thua roaiiiiii");
+					atem.setText("Bạn thua rồi");
 					return;
 				}
 				if (selected == null) {
 					selected = current;
 					current.setIcon(
-							new ImageIcon(getClass().getResource("/Images/" + current.getText().trim() + ".png")));
+							new ImageIcon(getClass().getResource("/" + current.getText().trim() + ".png")));
 				} else {
 					attemptsLeft -= 1;
-					atem.setText("Attempts: " + attemptsLeft);
+					atem.setText("Số lần thử: " + attemptsLeft);
 					if (selected.getText().trim().equalsIgnoreCase(current.getText().trim())) {
 						numPoint += pointAdd;
 						numPairsLeft -= 1;
-						pair.setText("Pairs left: " + numPairsLeft);
-						point.setText("Point: " + numPoint);
+						pair.setText("Số mảnh: " + numPairsLeft);
+						point.setText("Điểm: " + numPoint);
 
 						current.setIcon(
-								new ImageIcon(getClass().getResource("/Images/" + current.getText().trim() + ".png")));
+								new ImageIcon(getClass().getResource("/" + current.getText().trim() + ".png")));
 						current.setEnabled(false);
 						selected.setEnabled(false);
 						selected = null;
 						if (numPairsLeft == 0) {
 							timer3.stop();
-							pair.setText("May thang roaiiiiii");
+							pair.setText("Bạn thắng rồi");
 						}
 					} else {
 						numPoint -= pointSub;
-						point.setText("Point: " + numPoint);
+						point.setText("Điểm: " + numPoint);
 						current.setIcon(
-								new ImageIcon(getClass().getResource("/Images/" + current.getText().trim() + ".png")));
+								new ImageIcon(getClass().getResource("/" + current.getText().trim() + ".png")));
 						timer1.start();
 					}
 				}

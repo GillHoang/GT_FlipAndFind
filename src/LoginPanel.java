@@ -1,32 +1,33 @@
+package src;
+
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
 import java.util.*;
 
 public class LoginPanel extends JPanel {
-	JPanel cardPanel;
-	CardLayout cardLayout;
-	JLabel titleLabel;
-	JTextField usernameField;
-	JPasswordField passwordField;
-	JLabel errorLabel;
-	JButton loginButton;
-	String _username = "a";
-	String _password = "b";
+	private static final int LEAF_COUNT = 1; // Số lượng lá
+	private final Leaf[] leaves = new Leaf[LEAF_COUNT];
+	private Leaf leaf;
+	private CardLayout cardLayout;
+	private JPanel mainPanel;
+	private String _username = "username";
+	private String _password = "password";
 
 	public LoginPanel(CardLayout cardLayout, JPanel cardPanel) {
 		this.setLayout(null);
-		this.cardPanel = cardPanel;
 		this.cardLayout = cardLayout;
+		this.mainPanel = cardPanel;
+
 		// Tiêu đề
-		titleLabel = new JLabel("Sign In", JLabel.CENTER);
+		JLabel titleLabel = new JLabel("Sign In", JLabel.CENTER);
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 50));
 		titleLabel.setForeground(Color.WHITE);
 		titleLabel.setBounds(500, 170, 200, 150);
 		this.add(titleLabel);
 
 		// Trường nhập Username
-		usernameField = new JTextField("Username");
+		JTextField usernameField = new JTextField("Username");
 		usernameField.setFont(new Font("Arial", Font.PLAIN, 20));
 		usernameField.setBounds(420, 300, 350, 50);
 		usernameField.setBorder(BorderFactory.createEmptyBorder());
@@ -54,7 +55,7 @@ public class LoginPanel extends JPanel {
 		});
 
 		// Trường nhập Password
-		passwordField = new JPasswordField("Password");
+		JPasswordField passwordField = new JPasswordField("Password");
 		passwordField.setFont(new Font("Arial", Font.PLAIN, 20));
 		passwordField.setBounds(420, 380, 350, 50);
 		passwordField.setBorder(BorderFactory.createEmptyBorder());
@@ -85,7 +86,7 @@ public class LoginPanel extends JPanel {
 		});
 
 		// Nút Login
-		loginButton = new JButton("LOGIN");
+		JButton loginButton = new JButton("LOGIN");
 		loginButton.setFont(new Font("Arial", Font.BOLD, 24));
 		loginButton.setBounds(420, 480, 350, 60);
 		loginButton.setForeground(Color.WHITE);
@@ -94,7 +95,7 @@ public class LoginPanel extends JPanel {
 		this.add(loginButton);
 
 		// Thông báo lỗi
-		errorLabel = new JLabel("", JLabel.CENTER);
+		JLabel errorLabel = new JLabel("", JLabel.CENTER);
 		errorLabel.setFont(new Font("Arial", Font.PLAIN, 18));
 		errorLabel.setForeground(Color.RED);
 		errorLabel.setBounds(450, 440, 300, 50);
@@ -116,6 +117,36 @@ public class LoginPanel extends JPanel {
 				errorLabel.setText("Sai tên tài khoản hoặc mật khẩu");
 			}
 		});
+
+		//khởi tạo lá
+		Random random = new Random();
+		for (int i = 0; i < LEAF_COUNT; i++) {
+			leaves[i] = new Leaf((int) (Math.random() * 800), (int) (Math.random() * 600), 1 + (int) (Math.random() * 3));
+		}
+
+		// Cập nhật vị trí của lá trong một luồng riêng
+		Thread leafUpdater = new Thread(() -> {
+			while (true) {
+				for (Leaf leaf : leaves) {
+					leaf.y += leaf.speed * 0.1;// slowmotion
+					leaf.x += Math.sin(leaf.y / 100.0) * 1; //lắc nhẹ theo trục x
+					if (leaf.y > getHeight()) {
+						leaf.y = -20; // reset vị trí nếu rơi xuống
+						leaf.x = (int) (Math.random() * getWidth());
+					}
+				}
+				// Cập nhật giao diện
+				SwingUtilities.invokeLater(this::repaint);
+
+				try {
+					Thread.sleep(1500); // Cập nhật mỗi 50ms
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		leafUpdater.setDaemon(true); // Để chương trình dừng khi thoát
+		leafUpdater.start();
 	}
 
 	@Override
@@ -124,8 +155,7 @@ public class LoginPanel extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 
 		// Vẽ nền gradient
-		GradientPaint gradient = new GradientPaint(0, 0, new Color(33, 176, 130), getWidth(), getHeight(),
-				new Color(30, 120, 180));
+		GradientPaint gradient = new GradientPaint(0, 0, new Color(33, 176, 130), getWidth(), getHeight(), new Color(30, 120, 180));
 		g2d.setPaint(gradient);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 
@@ -167,5 +197,17 @@ public class LoginPanel extends JPanel {
 		// Tô màu lục giác
 		g2d.setColor(new Color(255, 255, 255, 50));
 		g2d.fillPolygon(hexagon);
+	}
+}
+
+
+// Lớp đại diện cho một chiếc lá
+class Leaf {
+	int x, y, speed;
+
+	public Leaf(int x, int y, int speed) {
+		this.x = x;
+		this.y = y;
+		this.speed = speed;
 	}
 }

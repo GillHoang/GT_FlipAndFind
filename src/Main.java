@@ -1,9 +1,11 @@
+package src;
+
 import java.awt.CardLayout;
 import javax.swing.*;
 
 public class Main extends JFrame {
-	JPanel cardPanel;
-	CardLayout cardLayout;
+	private JPanel cardPanel;
+	private CardLayout cardLayout;
 
 	public Main() {
 		super("Flip and Find");
